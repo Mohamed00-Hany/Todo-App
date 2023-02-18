@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#ff5722"
+    app:cardElevation="6dp"
+    app:cardCornerRadius="16dp"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="10dp">
+
+
+    <com.zerobranch.layout.SwipeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipe_layout"
+        app:leftItem="@id/left_view"
+        app:swipeDirection="right"
+        app:draggedItem="@id/task_item">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/delete_task"
+            app:cardBackgroundColor="#ff5722"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/left_view"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:paddingEnd="18dp"
+                android:paddingStart="18dp"
+                android:src="@drawable/ic_delete_task"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:textStyle="bold"
+                android:layout_gravity="bottom|center"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginVertical="22dp"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/item_task_color"
+            android:id="@+id/task_item"
+            app:cardElevation="6dp"
+            app:cardCornerRadius="16dp"
+            app:contentPadding="5dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+                <View
+                    android:id="@+id/task_line"
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:background="@drawable/rounded_view"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginVertical="12dp"/>
+                <TextView
+                    android:id="@+id/task_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/task_line"
+                    app:layout_constraintTop_toTopOf="@id/task_line"
+                    app:layout_constraintBottom_toTopOf="@id/task_time"
+                    app:layout_constraintEnd_toStartOf="@id/task_button_check"
+                    android:text="play basket ball"
+                    android:gravity="start"
+                    android:textStyle="bold"
+                    android:textSize="22sp"
+                    android:maxLength="30"
+                    android:layout_marginStart="25dp"
+                    android:textColor="@color/color_secondary"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="20dp"
+                    />
+
+                <TextView
+                    android:id="@+id/task_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:text=" 10:30 AM"
+                    android:textColor="@color/task_time_color"
+                    android:textSize="16sp"
+                    android:drawableStart="@drawable/ic_task_time"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="@id/task_line"
+                    app:layout_constraintEnd_toStartOf="@+id/task_button_check"
+                    app:layout_constraintStart_toEndOf="@id/task_line"
+                    app:layout_constraintTop_toBottomOf="@id/task_title" />
+
+                <ImageButton
+                    android:id="@+id/task_button_check"
+                    android:layout_width="65dp"
+                    android:layout_height="35dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/task_line"
+                    app:layout_constraintBottom_toBottomOf="@id/task_line"
+                    android:layout_marginRight="25dp"
+                    android:background="@drawable/task_button_check_rounded"
+                    app:srcCompat="@drawable/ic_check"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+
+    </com.zerobranch.layout.SwipeLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>
+
+
+

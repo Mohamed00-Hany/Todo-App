@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary color -->
+
+    <color name="color_primary">#DEEBDA</color>
+    <color name="color_primary_variant">#BEE3B4</color>
+
+    <!-- Secondary color -->
+
+    <color name="color_secondary">#5D9BEB</color>
+    <color name="color_secondary_variant">#488FEC</color>
+    <color name="color_on_secondary">@color/white</color>
+
+    <!--  -->
+
+    <color name="color_item_not_selected">#AFAFAF</color>
+
+    <color name="transparent_color">#00FFFFFF</color>
+
+    <color name="item_task_color">@color/white</color>
+
+    <color name="task_time_color">#B3000000</color>
+
+    <color name="edit_text_color">#CC292929</color>
+
+    <color name="task_done_color">#FF00FF00</color>
+
+</resources>
