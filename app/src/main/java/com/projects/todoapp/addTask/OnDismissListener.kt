@@ -1,4 +1,4 @@
-package com.projects.todoapp
+package com.projects.todoapp.addTask
 
 interface OnDismissListener
 {

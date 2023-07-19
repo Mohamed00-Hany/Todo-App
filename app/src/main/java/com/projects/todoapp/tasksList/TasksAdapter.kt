@@ -1,20 +1,14 @@
-package com.projects.todoapp
+package com.projects.todoapp.tasksList
 
-import android.content.Context
 import android.graphics.Color
 import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.projects.todoapp.database.TodoDatabase
+import com.projects.todoapp.R
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.ItemTaskBinding
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 class TasksAdapter(private var tasksList:List<Task>?) : RecyclerView.Adapter<TasksAdapter.ViewHolder>()
 {
@@ -62,14 +56,14 @@ class TasksAdapter(private var tasksList:List<Task>?) : RecyclerView.Adapter<Tas
     }
 
 
-    lateinit var onDoneClickListener:OnDoneClickListener
+    lateinit var onDoneClickListener: OnDoneClickListener
 
     interface OnDoneClickListener
     {
         fun taskDone(position : Int)
     }
 
-    lateinit var onDeleteClickListener:OnDeleteClickListener
+    lateinit var onDeleteClickListener: OnDeleteClickListener
 
     interface OnDeleteClickListener
     {
@@ -77,7 +71,7 @@ class TasksAdapter(private var tasksList:List<Task>?) : RecyclerView.Adapter<Tas
     }
 
 
-    lateinit var onTaskClickListener:OnTaskClickListener
+    lateinit var onTaskClickListener: OnTaskClickListener
 
     interface OnTaskClickListener
     {

@@ -29,4 +29,6 @@
 
     <color name="task_done_color">#FF00FF00</color>
 
+    <color name="welcome_text">@color/black</color>
+
 </resources>

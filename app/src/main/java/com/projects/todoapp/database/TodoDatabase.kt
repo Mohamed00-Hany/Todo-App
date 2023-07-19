@@ -12,11 +12,12 @@ abstract class TodoDatabase :RoomDatabase() {
 
     abstract fun getTaskDao():TaskDao
 
-
     companion object
     {
-        private val databaseName="TodoDatabase"
+        private const val databaseName="TodoDatabase"
         private var myDatabase:TodoDatabase?=null
+
+        @Synchronized
         fun getDatabase(context:Context):TodoDatabase?
         {
             if(myDatabase==null)

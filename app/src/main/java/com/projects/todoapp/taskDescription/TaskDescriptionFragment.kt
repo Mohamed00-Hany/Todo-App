@@ -1,12 +1,10 @@
-package com.projects.todoapp.fragments
+package com.projects.todoapp.taskDescription
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.databinding.FragmentTaskDescriptionBinding
 
 class TaskDescriptionFragment : BottomSheetDialogFragment() {

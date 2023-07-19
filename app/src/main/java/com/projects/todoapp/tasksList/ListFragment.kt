@@ -1,49 +1,53 @@
-package com.projects.todoapp.fragments
+package com.projects.todoapp.tasksList
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.github.hachimann.materialcalendarview.CalendarDay
-import com.projects.todoapp.TasksAdapter
 import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.FragmentListBinding
+import com.projects.todoapp.taskDescription.TaskDescriptionFragment
 import java.util.Calendar
 
 class ListFragment : Fragment(){
     lateinit var binding:FragmentListBinding
     lateinit var recyclerView: RecyclerView
     lateinit var tasksAdapter: TasksAdapter
-
     var tasksList:List<Task>?=null
+    val currentDate=Calendar.getInstance()
+
+    init {
+        currentDate.set(Calendar.HOUR,0)
+        currentDate.set(Calendar.MINUTE,0)
+        currentDate.set(Calendar.SECOND,0)
+        currentDate.set(Calendar.MILLISECOND,0)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding=FragmentListBinding.inflate(inflater,container,false)
-        //TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.deleteAllTasks()
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView=binding.recyclerViewTasks
-        tasksAdapter=TasksAdapter(null)
+        tasksAdapter= TasksAdapter(null)
         recyclerView.adapter=tasksAdapter
+        registerTaskCallBacks()
+        binding.calendarView.selectedDate= CalendarDay.today()
+    }
 
-        tasksAdapter.onTaskClickListener=object : TasksAdapter.OnTaskClickListener
-        {
-            override fun showTaskDescriptionFragment(position : Int) {
-               val taskDescriptionFragment = TaskDescriptionFragment()
-                taskDescriptionFragment.show(childFragmentManager,"")
-                val description=tasksList?.get(position)?.description
-                taskDescriptionFragment.setTaskDescription(description)
-            }
-        }
-
+    private fun registerTaskCallBacks()
+    {
         binding.calendarView.setOnDateChangedListener{ calender,selectedDate,selected ->
             if (selected)
             {
@@ -52,10 +56,17 @@ class ListFragment : Fragment(){
                 currentDate.set(Calendar.DAY_OF_MONTH,selectedDate.day)
                 loadData()
             }
-
         }
-        binding.calendarView.selectedDate= CalendarDay.today()
 
+        tasksAdapter.onTaskClickListener=object : TasksAdapter.OnTaskClickListener
+        {
+            override fun showTaskDescriptionFragment(position : Int) {
+                val taskDescriptionFragment = TaskDescriptionFragment()
+                taskDescriptionFragment.show(childFragmentManager,"")
+                val description=tasksList?.get(position)?.description
+                taskDescriptionFragment.setTaskDescription(description)
+            }
+        }
 
         tasksAdapter.onDeleteClickListener=object : TasksAdapter.OnDeleteClickListener
         {
@@ -63,7 +74,6 @@ class ListFragment : Fragment(){
                 TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.deleteTask(tasksList?.get(position)?:Task())
                 loadData()
             }
-
         }
 
         tasksAdapter.onDoneClickListener=object : TasksAdapter.OnDoneClickListener
@@ -74,9 +84,19 @@ class ListFragment : Fragment(){
                 TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.updateTask(updatedTask?:Task())
                 loadData()
             }
-
         }
+    }
 
+    var onResumedListener:OnFragmentStarted?=null
+
+    interface OnFragmentStarted
+    {
+        fun bindActivityTitle()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        onResumedListener?.bindActivityTitle()
     }
 
     override fun onResume() {
@@ -84,13 +104,6 @@ class ListFragment : Fragment(){
         loadData()
     }
 
-    val currentDate=Calendar.getInstance()
-    init {
-        currentDate.set(Calendar.HOUR,0)
-        currentDate.set(Calendar.MINUTE,0)
-        currentDate.set(Calendar.SECOND,0)
-        currentDate.set(Calendar.MILLISECOND,0)
-    }
 
     fun loadData()
     {
@@ -104,6 +117,19 @@ class ListFragment : Fragment(){
             return
         }
 
+        binding.welcomeText.isVisible = tasksList?.isEmpty() != false
+    }
+
+    var onFragmentDestroyedListener:OnFragmentDestroyed?=null
+
+    interface OnFragmentDestroyed
+    {
+        fun onDestroyed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        onFragmentDestroyedListener?.onDestroyed()
     }
 
 }

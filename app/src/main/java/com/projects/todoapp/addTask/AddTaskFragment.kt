@@ -1,16 +1,15 @@
-package com.projects.todoapp.fragments
+package com.projects.todoapp.addTask
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.projects.todoapp.OnDismissListener
 import com.projects.todoapp.R
 import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
@@ -123,25 +122,22 @@ class AddTaskFragment : BottomSheetDialogFragment() {
             }
             ).setCancelable(false).create()
 
-        val black=-16777216
-        val white=-1
-        val defaultNightMode = AppCompatDelegate.getDefaultNightMode()
-        val modeNightNo = AppCompatDelegate.MODE_NIGHT_NO
-        if(defaultNightMode == modeNightNo)
-        {
-            alertDialogBuilder.setOnShowListener {
-                alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(black)
+        val activity= requireActivity()
+        val currentNightMode = activity.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_NO -> {
+                alertDialogBuilder.setOnShowListener {
+                    alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(activity.getColor(R.color.black))
+                }
             }
-        }
-        else
-        {
-            alertDialogBuilder.setOnShowListener {
-                alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(white)
+            Configuration.UI_MODE_NIGHT_YES -> {
+                alertDialogBuilder.setOnShowListener {
+                    alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(activity.getColor(R.color.white))
+                }
             }
         }
 
         alertDialogBuilder.show()
-
     }
 
     fun setDate()

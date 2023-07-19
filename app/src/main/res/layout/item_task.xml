@@ -7,15 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="#ff5722"
-    app:cardElevation="6dp"
+    app:cardElevation="2dp"
     app:cardCornerRadius="16dp"
     android:layout_marginHorizontal="20dp"
     android:layout_marginVertical="10dp">
 
-
     <com.zerobranch.layout.SwipeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/swipe_layout"
         app:leftItem="@id/left_view"
         app:swipeDirection="right"
@@ -58,16 +57,16 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/item_task_color"
             android:id="@+id/task_item"
-            app:cardElevation="6dp"
+            app:cardElevation="2dp"
             app:cardCornerRadius="16dp"
             app:contentPadding="5dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:layout_height="110dp">
 
                 <View
                     android:id="@+id/task_line"
