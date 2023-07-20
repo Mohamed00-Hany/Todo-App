@@ -8,7 +8,9 @@ import com.projects.todoapp.databinding.ActivityMainBinding
 import com.projects.todoapp.addTask.AddTaskFragment
 import com.projects.todoapp.settings.SettingsFragment
 import com.projects.todoapp.addTask.OnDismissListener
+import com.projects.todoapp.tasksList.CurrentDate
 import com.projects.todoapp.tasksList.ListFragment
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -112,6 +114,7 @@ class MainActivity : AppCompatActivity() {
         {
             override fun BottomSheetFragmentDismissed() {
                 tasksListFragment?.loadData()
+                tasksListFragment?.scrollToAddedTask()
             }
         }
         fragment.show(supportFragmentManager,"")
@@ -166,6 +169,14 @@ class MainActivity : AppCompatActivity() {
                     binding.title.text="Settings"
                 }
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!modeChanged)
+        {
+            CurrentDate.currentDate= Calendar.getInstance()
         }
     }
 

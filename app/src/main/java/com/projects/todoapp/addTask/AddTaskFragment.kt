@@ -14,12 +14,14 @@ import com.projects.todoapp.R
 import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.FragmentAddTaskBinding
+import com.projects.todoapp.tasksList.CurrentDate
 import java.util.*
 
 
 class AddTaskFragment : BottomSheetDialogFragment() {
     lateinit var binding:FragmentAddTaskBinding
     var currentDate=Calendar.getInstance()
+    var dateIsChanged=false
     init {
         currentDate.set(Calendar.HOUR,0)
         currentDate.set(Calendar.MINUTE,0)
@@ -38,7 +40,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setDate()
+        setDate(false)
 
         binding.editTextDate.setOnClickListener{
             showDatePacker()
@@ -100,11 +102,15 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         var taskDescription=binding.editTextDescription.editText?.text.toString()
 
         val time=Calendar.getInstance()
-
+        if (dateIsChanged)
+        {
+            CurrentDate.currentDate=currentDate
+            dateIsChanged=false
+        }
         TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.insertTask(Task(
             title = taskTitle,
             description = taskDescription,
-            date = currentDate.timeInMillis,
+            date = CurrentDate.currentDate?.timeInMillis,
             time=time.timeInMillis
         ))
 
@@ -140,23 +146,30 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         alertDialogBuilder.show()
     }
 
-    fun setDate()
+    fun setDate(stateOfDate:Boolean)
     {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-        binding.editTextDate.text= dateFormat.format(Date(currentDate.timeInMillis))
+
+        if (stateOfDate)
+        {
+            binding.editTextDate.text= dateFormat.format(Date(currentDate.timeInMillis!!))
+        }
+        else
+        {
+            binding.editTextDate.text= dateFormat.format(Date(CurrentDate.currentDate?.timeInMillis!!))
+        }
     }
 
-
-    fun showDatePacker()
+    private fun showDatePacker()
     {
-
         DatePickerDialog(requireActivity(),
             R.style.DialogTheme, DatePickerDialog.OnDateSetListener{ datePacker, year, month, day ->
                 currentDate.set(Calendar.YEAR,year)
                 currentDate.set(Calendar.MONTH,month)
                 currentDate.set(Calendar.DAY_OF_MONTH,day)
-                setDate()
-            },currentDate.get(Calendar.YEAR),currentDate.get(Calendar.MONTH),currentDate.get(Calendar.DAY_OF_MONTH))
+                setDate(true)
+                dateIsChanged=true
+            },CurrentDate.currentDate?.get(Calendar.YEAR)!!,CurrentDate.currentDate?.get(Calendar.MONTH)!!,CurrentDate.currentDate?.get(Calendar.DAY_OF_MONTH)!!)
             .show()
     }
 

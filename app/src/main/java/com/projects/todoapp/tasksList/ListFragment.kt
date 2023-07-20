@@ -12,6 +12,7 @@ import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.FragmentListBinding
 import com.projects.todoapp.taskDescription.TaskDescriptionFragment
+import com.projects.todoapp.tasksList.CurrentDate.Companion.currentDate
 import java.util.Calendar
 
 class ListFragment : Fragment(){
@@ -19,13 +20,12 @@ class ListFragment : Fragment(){
     lateinit var recyclerView: RecyclerView
     lateinit var tasksAdapter: TasksAdapter
     var tasksList:List<Task>?=null
-    val currentDate=Calendar.getInstance()
 
     init {
-        currentDate.set(Calendar.HOUR,0)
-        currentDate.set(Calendar.MINUTE,0)
-        currentDate.set(Calendar.SECOND,0)
-        currentDate.set(Calendar.MILLISECOND,0)
+        currentDate?.set(Calendar.HOUR,0)
+        currentDate?.set(Calendar.MINUTE,0)
+        currentDate?.set(Calendar.SECOND,0)
+        currentDate?.set(Calendar.MILLISECOND,0)
     }
 
     override fun onCreateView(
@@ -43,7 +43,10 @@ class ListFragment : Fragment(){
         tasksAdapter= TasksAdapter(null)
         recyclerView.adapter=tasksAdapter
         registerTaskCallBacks()
-        binding.calendarView.selectedDate= CalendarDay.today()
+        if (savedInstanceState==null)
+        {
+            binding.calendarView.selectedDate= CalendarDay.today()
+        }
     }
 
     private fun registerTaskCallBacks()
@@ -51,9 +54,9 @@ class ListFragment : Fragment(){
         binding.calendarView.setOnDateChangedListener{ calender,selectedDate,selected ->
             if (selected)
             {
-                currentDate.set(Calendar.YEAR,selectedDate.year)
-                currentDate.set(Calendar.MONTH,selectedDate.month-1)
-                currentDate.set(Calendar.DAY_OF_MONTH,selectedDate.day)
+                currentDate?.set(Calendar.YEAR,selectedDate.year)
+                currentDate?.set(Calendar.MONTH,selectedDate.month-1)
+                currentDate?.set(Calendar.DAY_OF_MONTH,selectedDate.day)
                 loadData()
             }
         }
@@ -109,7 +112,17 @@ class ListFragment : Fragment(){
     {
         if(isResumed)
         {
-            tasksList=TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.getTasksByDate(currentDate.timeInMillis)
+            val calendarDay=CalendarDay.from(
+                currentDate?.get(Calendar.YEAR)!!
+                , currentDate?.get(Calendar.MONTH)!! +1
+                ,currentDate?.get(Calendar.DAY_OF_MONTH)!!)
+
+            if (calendarDay.date!=binding.calendarView.selectedDate?.date)
+            {
+                binding.calendarView.currentDate= calendarDay
+                binding.calendarView.selectedDate= calendarDay
+            }
+            tasksList=TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.getTasksByDate(currentDate?.timeInMillis!!)
             tasksAdapter.changeData(tasksList)
         }
         else
@@ -130,6 +143,13 @@ class ListFragment : Fragment(){
     override fun onDestroy() {
         super.onDestroy()
         onFragmentDestroyedListener?.onDestroyed()
+    }
+
+    fun scrollToAddedTask() {
+        if (isResumed)
+        {
+            recyclerView.smoothScrollToPosition(tasksAdapter.itemCount)
+        }
     }
 
 }
