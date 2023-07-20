@@ -2,15 +2,17 @@ package com.projects.todoapp.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.projects.todoapp.R
-import com.projects.todoapp.databinding.ActivityMainBinding
 import com.projects.todoapp.addTask.AddTaskFragment
-import com.projects.todoapp.settings.SettingsFragment
 import com.projects.todoapp.addTask.OnDismissListener
+import com.projects.todoapp.databinding.ActivityMainBinding
+import com.projects.todoapp.settings.SettingsFragment
 import com.projects.todoapp.tasksList.CurrentDate
 import com.projects.todoapp.tasksList.ListFragment
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -178,6 +180,15 @@ class MainActivity : AppCompatActivity() {
         {
             CurrentDate.currentDate= Calendar.getInstance()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val NightMode = AppCompatDelegate.getDefaultNightMode()
+        val sharedPreferences = getSharedPreferences("SharedPrefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("NightModeInt", NightMode)
+        editor.apply()
     }
 
 }
