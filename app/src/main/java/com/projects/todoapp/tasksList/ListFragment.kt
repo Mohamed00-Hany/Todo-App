@@ -12,7 +12,6 @@ import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.FragmentListBinding
 import com.projects.todoapp.taskDescription.TaskDescriptionFragment
-import com.projects.todoapp.tasksList.CurrentDate.Companion.currentDate
 import java.util.Calendar
 
 class ListFragment : Fragment(){
@@ -20,6 +19,11 @@ class ListFragment : Fragment(){
     lateinit var recyclerView: RecyclerView
     lateinit var tasksAdapter: TasksAdapter
     var tasksList:List<Task>?=null
+
+    companion object
+    {
+        var currentDate:Calendar?= Calendar.getInstance()
+    }
 
     init {
         currentDate?.set(Calendar.HOUR,0)
