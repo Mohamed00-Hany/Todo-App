@@ -30,7 +30,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="enter your task title"
+            android:hint="Enter your task title"
             android:maxLines="1"
             android:minLines="1"
             android:maxLength="30"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top|start"
-            android:hint="enter your task details"
+            android:hint="Enter your task details"
             android:maxLines="3"
             android:minLines="3"
             android:maxLength="700"
@@ -68,14 +68,38 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/task_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/text_title"
+        android:textColor="@color/edit_text_color"
+        android:hint="Select time"
+        android:maxLines="1"
+        android:minLines="1"
+        android:layout_margin="20dp"
+        android:padding="16dp"
+        android:backgroundTint="@color/transparent_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_description"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/task_time"
+        app:layout_constraintStart_toStartOf="@id/task_time"
+        app:layout_constraintEnd_toEndOf="@id/task_time"
+        android:background="#939292"
+        />
 
         <TextView
-            android:id="@+id/edit_text_date"
+            android:id="@+id/task_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/text_title"
             android:textColor="@color/edit_text_color"
-            android:hint="select date"
+            android:hint="Select date"
             android:maxLines="1"
             android:minLines="1"
             android:layout_margin="20dp"
@@ -83,14 +107,14 @@
             android:backgroundTint="@color/transparent_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_description"/>
+            app:layout_constraintTop_toBottomOf="@id/task_time"/>
 
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_date"
-            app:layout_constraintStart_toStartOf="@id/edit_text_date"
-            app:layout_constraintEnd_toEndOf="@id/edit_text_date"
+            app:layout_constraintTop_toBottomOf="@id/task_date"
+            app:layout_constraintStart_toStartOf="@id/task_date"
+            app:layout_constraintEnd_toEndOf="@id/task_date"
             android:background="#939292"
             />
 
@@ -98,7 +122,7 @@
         android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_date"
+        app:layout_constraintTop_toBottomOf="@id/task_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="submit"
