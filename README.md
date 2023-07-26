@@ -1,4 +1,3 @@
-![task done – 1](https://github.com/Mohamed00-Hany/Todo-App/assets/123842448/4c7cd57d-ebf1-4c06-a533-64177ef5c9b1)
 # Todo-App
 ## Description
 This app can help you to organize your tasks by it's date and time
