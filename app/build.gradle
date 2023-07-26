@@ -42,7 +42,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
 
-    //room
+    // Room
     def room_version = "2.5.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
@@ -50,13 +50,20 @@ dependencies {
     // To use Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:$room_version"
 
-    //calenderView
+    // Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // CalenderView
 
     implementation 'com.github.hachimann:material-calendarview:0.0.9'
 
-    //swipe to delete
+    // Swipe to delete
 
     implementation 'com.github.zerobranch:SwipeLayout:1.3.1'
+
+    // Lifecycles only (without ViewModel or LiveData)
+
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

@@ -29,7 +29,7 @@
         <item name="itemIconTint">@color/menu_item_color</item>
         <item name="itemTextColor">@color/menu_item_color</item>
     </style>
-    <style name="text_title">
+    <style name="add_task_text_style">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>
@@ -48,16 +48,16 @@
         <item name="mcv_tileWidth">match_parent</item>
         <item name="mcv_tileHeight">30dp</item>
     </style>
-    <style name="text_mode">
+    <style name="change_mode_text_style">
         <item name="android:textSize">24dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:gravity">center</item>
     </style>
-    <style name="change_mode_style">
+    <style name="change_mode_button_style">
         <item name="android:textSize">28dp</item>
         <item name="android:textColor">@color/color_secondary</item>
-        <item name="android:background">@drawable/roundedt_mode</item>
+        <item name="android:background">@drawable/rounded_mode</item>
         <item name="android:gravity">center</item>
         <item name="android:elevation">6dp</item>
     </style>

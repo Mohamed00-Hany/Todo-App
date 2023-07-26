@@ -1,21 +1,23 @@
-package com.projects.todoapp.main
+package com.projects.todoapp.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.projects.todoapp.R
-import com.projects.todoapp.addTask.AddTaskFragment
-import com.projects.todoapp.addTask.OnDismissListener
+import com.projects.todoapp.ui.addTask.AddTaskFragment
+import com.projects.todoapp.ui.addTask.OnDismissListener
 import com.projects.todoapp.databinding.ActivityMainBinding
-import com.projects.todoapp.settings.SettingsFragment
-import com.projects.todoapp.tasksList.ListFragment
+import com.projects.todoapp.ui.settings.SettingsFragment
+import com.projects.todoapp.ui.tasksList.ListFragment
+import kotlinx.coroutines.launch
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    private var tasksListFragment:ListFragment?=null
+    private var tasksListFragment: ListFragment?=null
     private var tasksSettingsFragment: SettingsFragment?=null
     var modeChanged=false
     var backFromSettingsFragment=false
@@ -28,9 +30,26 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState!=null)
         {
             tasksListFragment=supportFragmentManager.findFragmentByTag("listFragment") as ListFragment
-            tasksSettingsFragment=supportFragmentManager.findFragmentByTag("settingsFragment") as SettingsFragment
-            registerChangeActivityTitleCallBacks(setListTitle = true,setSettingsTitle = true)
-            registerDestroyedFragmentsCallBacks(setListCallbacks = true,setSettingsCallbacks = true)
+            if(supportFragmentManager.findFragmentByTag("settingsFragment")!=null)
+            {
+                tasksSettingsFragment=supportFragmentManager.findFragmentByTag("settingsFragment") as SettingsFragment
+                registerChangeActivityTitleCallBacks(setListTitle = true,setSettingsTitle = true)
+                registerDestroyedFragmentsCallBacks(setListCallbacks = true,setSettingsCallbacks = true)
+            }
+            else
+            {
+                registerChangeActivityTitleCallBacks(setListTitle = true,setSettingsTitle = false)
+                registerDestroyedFragmentsCallBacks(setListCallbacks = true,setSettingsCallbacks = false)
+            }
+            if(ListFragment.currentDate==null)
+            {
+                ListFragment.currentDate=Calendar.getInstance()
+            }
+            ListFragment.currentDate?.timeInMillis=savedInstanceState.getLong("CurrentDate")
+            if (savedInstanceState.getLong("timeOfNewInsertedTask")!=0L)
+            {
+                tasksListFragment!!.timeOfNewInsertedTask=savedInstanceState.getLong("timeOfNewInsertedTask")
+            }
         }
 
         registerBottomNavigationViewClicks()
@@ -107,16 +126,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBottomSheetFragment()
     {
-        val fragment= AddTaskFragment()
+        val addTaskFragment= AddTaskFragment()
 
-        fragment.onDismissListener=object : OnDismissListener
+        addTaskFragment.onDismissListener=object : OnDismissListener
         {
-            override fun BottomSheetFragmentDismissed() {
-                tasksListFragment?.loadData()
-                tasksListFragment?.scrollToAddedTask()
+            override fun bottomSheetFragmentDismissed() {
+                lifecycleScope.launch {
+                    if (tasksListFragment?.isResumed == true)
+                    {
+                        ListFragment?.tasksList=null
+                        tasksListFragment?.loadData()
+                        tasksListFragment?.scrollToAddedTask(addTaskFragment.timeOfNewInsertedTask)
+                    }
+                    if(tasksSettingsFragment?.isResumed == true)
+                    {
+                        ListFragment?.tasksList=null
+                        tasksListFragment?.timeOfNewInsertedTask=addTaskFragment.timeOfNewInsertedTask
+                    }
+                }
             }
         }
-        fragment.show(supportFragmentManager,"")
+        addTaskFragment.show(supportFragmentManager,"")
     }
 
     private fun registerDestroyedFragmentsCallBacks(setListCallbacks:Boolean=false, setSettingsCallbacks:Boolean=false)
@@ -153,7 +183,7 @@ class MainActivity : AppCompatActivity() {
     {
         if (setListTitle)
         {
-            tasksListFragment?.onResumedListener=object :ListFragment.OnFragmentStarted
+            tasksListFragment?.onResumedListener=object : ListFragment.OnFragmentStarted
             {
                 override fun bindActivityTitle() {
                     binding.title.text="To Do List"
@@ -162,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (setSettingsTitle)
         {
-            tasksSettingsFragment?.onResumedListener=object :SettingsFragment.OnFragmentStarted
+            tasksSettingsFragment?.onResumedListener=object : SettingsFragment.OnFragmentStarted
             {
                 override fun bindActivityTitle() {
                     binding.title.text="Settings"
@@ -175,6 +205,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         if (!modeChanged)
         {
+            ListFragment.tasksList=null
             ListFragment.currentDate= Calendar.getInstance()
         }
     }
@@ -186,5 +217,10 @@ class MainActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit()
         editor.putInt("NightModeInt", NightMode)
         editor.apply()
+        outState.putLong("CurrentDate", ListFragment.currentDate?.timeInMillis!!)
+        if (tasksListFragment?.timeOfNewInsertedTask!=null)
+        {
+            outState.putLong("timeOfNewInsertedTask", tasksListFragment?.timeOfNewInsertedTask!!)
+        }
     }
 }

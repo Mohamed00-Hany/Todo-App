@@ -1,4 +1,4 @@
-package com.projects.todoapp.settings
+package com.projects.todoapp.ui.settings
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -48,7 +48,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    var onResumedListener:OnFragmentStarted?=null
+    var onResumedListener: OnFragmentStarted?=null
 
     interface OnFragmentStarted
     {
@@ -60,7 +60,7 @@ class SettingsFragment : Fragment() {
         onResumedListener?.bindActivityTitle()
     }
 
-    var onFragmentDestroyedListener:OnFragmentDestroyed?=null
+    var onFragmentDestroyedListener: OnFragmentDestroyed?=null
 
     interface OnFragmentDestroyed
     {

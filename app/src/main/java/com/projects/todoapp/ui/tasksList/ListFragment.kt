@@ -1,4 +1,4 @@
-package com.projects.todoapp.tasksList
+package com.projects.todoapp.ui.tasksList
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,23 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.github.hachimann.materialcalendarview.CalendarDay
 import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.FragmentListBinding
-import com.projects.todoapp.taskDescription.TaskDescriptionFragment
+import com.projects.todoapp.ui.taskDescription.TaskDescriptionFragment
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class ListFragment : Fragment(){
     lateinit var binding:FragmentListBinding
     lateinit var recyclerView: RecyclerView
     lateinit var tasksAdapter: TasksAdapter
-    var tasksList:List<Task>?=null
-
+    var timeOfNewInsertedTask:Long?=null
     companion object
     {
         var currentDate:Calendar?= Calendar.getInstance()
+        var tasksList:List<Task>?=null
     }
 
     init {
@@ -30,6 +32,7 @@ class ListFragment : Fragment(){
         currentDate?.set(Calendar.MINUTE,0)
         currentDate?.set(Calendar.SECOND,0)
         currentDate?.set(Calendar.MILLISECOND,0)
+        currentDate?.set(Calendar.AM_PM,0)
     }
 
     override fun onCreateView(
@@ -51,6 +54,10 @@ class ListFragment : Fragment(){
         {
             binding.calendarView.selectedDate= CalendarDay.today()
         }
+        if (tasksList!=null)
+        {
+            tasksAdapter.changeData(tasksList)
+        }
     }
 
     private fun registerTaskCallBacks()
@@ -61,7 +68,11 @@ class ListFragment : Fragment(){
                 currentDate?.set(Calendar.YEAR,selectedDate.year)
                 currentDate?.set(Calendar.MONTH,selectedDate.month-1)
                 currentDate?.set(Calendar.DAY_OF_MONTH,selectedDate.day)
-                loadData()
+                tasksList=null
+                lifecycleScope.launch {
+                    loadData()
+                    recyclerView.scrollToPosition(0)
+                }
             }
         }
 
@@ -78,8 +89,11 @@ class ListFragment : Fragment(){
         tasksAdapter.onDeleteClickListener=object : TasksAdapter.OnDeleteClickListener
         {
             override fun deleteTask(position: Int) {
-                TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.deleteTask(tasksList?.get(position)?:Task())
-                loadData()
+                lifecycleScope.launch {
+                    TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.deleteTask(tasksList?.get(position)?:Task())
+                    tasksList=null
+                    loadData()
+                }
             }
         }
 
@@ -88,13 +102,16 @@ class ListFragment : Fragment(){
             override fun taskDone(position: Int) {
                 val updatedTask=tasksList?.get(position)
                 updatedTask?.isDone=true
-                TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.updateTask(updatedTask?:Task())
-                loadData()
+                lifecycleScope.launch {
+                    TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.updateTask(updatedTask?:Task())
+                    tasksList=null
+                    loadData()
+                }
             }
         }
     }
 
-    var onResumedListener:OnFragmentStarted?=null
+    var onResumedListener: OnFragmentStarted?=null
 
     interface OnFragmentStarted
     {
@@ -108,36 +125,39 @@ class ListFragment : Fragment(){
 
     override fun onResume() {
         super.onResume()
-        loadData()
+        lifecycleScope.launch {
+            loadData()
+            timeOfNewInsertedTask?.let {
+                scrollToAddedTask(timeOfNewInsertedTask!!)
+                timeOfNewInsertedTask=null
+            }
+        }
     }
 
 
-    fun loadData()
+    suspend fun loadData()
     {
-        if(isResumed)
+        if(isResumed&&tasksList==null)
         {
             val calendarDay=CalendarDay.from(
                 currentDate?.get(Calendar.YEAR)!!
                 , currentDate?.get(Calendar.MONTH)!! +1
-                ,currentDate?.get(Calendar.DAY_OF_MONTH)!!)
+                , currentDate?.get(Calendar.DAY_OF_MONTH)!!)
 
             if (calendarDay.date!=binding.calendarView.selectedDate?.date)
             {
                 binding.calendarView.currentDate= calendarDay
                 binding.calendarView.selectedDate= calendarDay
             }
-            tasksList=TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.getTasksByDate(currentDate?.timeInMillis!!)
+
+            tasksList=TodoDatabase.getDatabase(requireActivity())?.getTaskDao()?.getTasksByDate(
+                currentDate?.timeInMillis!!)
             tasksAdapter.changeData(tasksList)
         }
-        else
-        {
-            return
-        }
-
-        binding.welcomeText.isVisible = tasksList?.isEmpty() != false
+        binding.welcomeText.isVisible = tasksList?.isEmpty() == true
     }
 
-    var onFragmentDestroyedListener:OnFragmentDestroyed?=null
+    var onFragmentDestroyedListener: OnFragmentDestroyed?=null
 
     interface OnFragmentDestroyed
     {
@@ -149,10 +169,21 @@ class ListFragment : Fragment(){
         onFragmentDestroyedListener?.onDestroyed()
     }
 
-    fun scrollToAddedTask() {
+    fun scrollToAddedTask(taskTime:Long) {
         if (isResumed)
         {
-            recyclerView.smoothScrollToPosition(tasksAdapter.itemCount)
+            var taskPosition=-1
+            for (i in 0 until tasksList?.size!!)
+            {
+                if(tasksList!![i].time==taskTime)
+                {
+                    taskPosition=i
+                }
+            }
+            if (taskPosition!=-1)
+            {
+                recyclerView.smoothScrollToPosition(taskPosition)
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.projects.todoapp.tasksList
+package com.projects.todoapp.ui.tasksList
 
 import android.graphics.Color
 import android.icu.text.SimpleDateFormat

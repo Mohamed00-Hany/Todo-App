@@ -26,7 +26,8 @@
         android:text="Add your tasks"
         android:textColor="@color/welcome_text"
         android:textSize="26dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_tasks"

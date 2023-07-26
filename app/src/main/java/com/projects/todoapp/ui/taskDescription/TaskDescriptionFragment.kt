@@ -1,4 +1,4 @@
-package com.projects.todoapp.taskDescription
+package com.projects.todoapp.ui.taskDescription
 
 import android.os.Bundle
 import android.view.LayoutInflater
