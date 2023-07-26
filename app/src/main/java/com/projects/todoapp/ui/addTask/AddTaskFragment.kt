@@ -1,4 +1,4 @@
-package com.projects.todoapp.addTask
+package com.projects.todoapp.ui.addTask
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -10,12 +10,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.projects.todoapp.R
 import com.projects.todoapp.database.TodoDatabase
 import com.projects.todoapp.database.model.Task
 import com.projects.todoapp.databinding.FragmentAddTaskBinding
-import com.projects.todoapp.tasksList.ListFragment
+import com.projects.todoapp.ui.tasksList.ListFragment
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -27,6 +29,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
     var invalidDate=false
     var invalidTime=false
     var timeIsSelected=false
+    var timeOfNewInsertedTask:Long=0
 
     init {
         taskTime.set(Calendar.SECOND,0)
@@ -54,7 +57,9 @@ class AddTaskFragment : BottomSheetDialogFragment() {
             showTimePacker()
         }
         binding.submitButton.setOnClickListener{
-            addTask()
+            lifecycleScope.launch {
+                addTask()
+            }
         }
 
     }
@@ -65,7 +70,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         super.onDismiss(dialog)
         if (taskInserted)
         {
-            onDismissListener.BottomSheetFragmentDismissed()
+            onDismissListener.bottomSheetFragmentDismissed()
         }
         else
         {
@@ -111,11 +116,16 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         toDay.set(Calendar.MINUTE,0)
         toDay.set(Calendar.SECOND,0)
         toDay.set(Calendar.MILLISECOND,0)
+        toDay.set(Calendar.AM_PM,0)
 
         if(ListFragment.currentDate?.timeInMillis!! < toDay.timeInMillis)
         {
             valid=false
             invalidDate=true
+        }
+        else
+        {
+            invalidDate=false
         }
 
         val timeNow=Calendar.getInstance()
@@ -127,11 +137,15 @@ class AddTaskFragment : BottomSheetDialogFragment() {
             valid=false
             invalidTime=true
         }
+        else
+        {
+            invalidTime=false
+        }
 
         return valid
     }
 
-    fun addTask()
+    suspend fun addTask()
     {
 
         if(!validate())
@@ -166,7 +180,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
             date = ListFragment.currentDate?.timeInMillis,
             time=taskTime.timeInMillis
         ))
-
+        timeOfNewInsertedTask=taskTime.timeInMillis
         taskInserted=true
         showTaskInsertedDialog("Task inserted successfully")
     }
@@ -225,7 +239,10 @@ class AddTaskFragment : BottomSheetDialogFragment() {
                 ListFragment.currentDate?.set(Calendar.MONTH,month)
                 ListFragment.currentDate?.set(Calendar.DAY_OF_MONTH,day)
                 setDate()
-            },ListFragment.currentDate?.get(Calendar.YEAR)!!,ListFragment.currentDate?.get(Calendar.MONTH)!!,ListFragment.currentDate?.get(Calendar.DAY_OF_MONTH)!!)
+            },
+            ListFragment.currentDate?.get(Calendar.YEAR)!!,
+            ListFragment.currentDate?.get(Calendar.MONTH)!!,
+            ListFragment.currentDate?.get(Calendar.DAY_OF_MONTH)!!)
             .show()
     }
 

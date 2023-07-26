@@ -13,8 +13,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="100dp"
         android:text="Mode"
-        style="@style/text_mode"
-        />
+        style="@style/change_mode_text_style"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -28,7 +27,6 @@
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp"
         android:text="Dark"
-        style="@style/change_mode_style"
-        />
+        style="@style/change_mode_button_style" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

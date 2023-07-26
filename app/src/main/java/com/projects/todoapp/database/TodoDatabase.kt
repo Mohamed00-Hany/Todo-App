@@ -18,18 +18,16 @@ abstract class TodoDatabase :RoomDatabase() {
         private var myDatabase:TodoDatabase?=null
 
         @Synchronized
-        fun getDatabase(context:Context):TodoDatabase?
+        fun getDatabase(context:Context):TodoDatabase
         {
             if(myDatabase==null)
             {
                 myDatabase= Room
                     .databaseBuilder(context,TodoDatabase::class.java,databaseName)
-                    .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build()
-                return myDatabase
             }
-            return myDatabase
+            return myDatabase!!
         }
     }
 

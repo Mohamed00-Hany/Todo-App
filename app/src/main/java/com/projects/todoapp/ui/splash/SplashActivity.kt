@@ -1,4 +1,4 @@
-package com.projects.todoapp.splash
+package com.projects.todoapp.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.projects.todoapp.databinding.ActivitySplashBinding
-import com.projects.todoapp.main.MainActivity
+import com.projects.todoapp.ui.main.MainActivity
 
 class SplashActivity : AppCompatActivity() {
     lateinit var binding:ActivitySplashBinding

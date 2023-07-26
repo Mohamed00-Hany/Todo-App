@@ -6,15 +6,15 @@ import com.projects.todoapp.database.model.Task
 @Dao
 interface TaskDao {
     @Insert
-    fun insertTask(task:Task)
+    suspend fun insertTask(task:Task)
     @Delete
-    fun deleteTask(task:Task)
+    suspend fun deleteTask(task:Task)
     @Update
-    fun updateTask(task:Task)
+    suspend fun updateTask(task:Task)
     @Query("select * from Task")
-    fun getAllTasks():List<Task>
+    suspend fun getAllTasks():List<Task>
     @Query("delete from Task")
-    fun deleteAllTasks()
-    @Query("select * from Task where date= :date")
-    fun getTasksByDate(date:Long):List<Task>
+    suspend fun deleteAllTasks()
+    @Query("select * from Task where date= :date order by time")
+    suspend fun getTasksByDate(date:Long):List<Task>
 }
